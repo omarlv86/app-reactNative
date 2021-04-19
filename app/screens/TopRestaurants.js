@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function Favorites() {
+export default function TopRestaurants() {
     return(
         <View>
-            <Text>Favorites...</Text>
+            <Text>Top Restaurants...</Text>
         </View>
     );
 }
