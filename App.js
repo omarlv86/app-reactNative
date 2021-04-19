@@ -1,10 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React /* { useEffect }*/ from 'react';
 import Navigation from "./app/navigations/Navigation";
+import { firebaseApp } from "./app/Utils/firebase";
+//import * as firebase from "firebase";
+
 
 export default function App() {
+
+  /*  Verificando que exista conexion con firebase
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      console.log(user);
+    });
+  }, []);
+  */
+
   return <Navigation />;
 }
+
 
 /*
 export default function App() {
