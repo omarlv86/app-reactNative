@@ -13,12 +13,11 @@ export default function AccountStack() {
               component={Account}
               options={{ title: "Mi cuenta" }}
             />
-            <Stack.screen
-              name="Login"
+            <Stack.Screen
+              name="login"
               component={Login}
-              options={{ title: "Iniciar sesión"}}
-            >
-            </Stack.screen>
+              options={{ title: "Iniciar Sesión" }}
+            />
         </Stack.Navigator>
         
     )
