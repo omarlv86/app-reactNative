@@ -1,9 +1,11 @@
 import React from "react";
 import { StyleSheet, View, Text, Image} from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import RegisterForm from "../../components/Account/RegisterForm";
 
 export default function Register() {
     return(
+        <KeyboardAwareScrollView>
         <View>
             <Image 
               source={require("../../../assets/img/5-tenedores-letras-icono-logo.png")}
@@ -14,6 +16,7 @@ export default function Register() {
                 <RegisterForm />
             </View>
         </View>
+        </KeyboardAwareScrollView>
     )
 }
 
