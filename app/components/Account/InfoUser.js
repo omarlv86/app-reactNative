@@ -1,14 +1,51 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Avatar } from "react-native-elements";
+import * as firebase from "firebase";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from 'expo-media-library';
+
 
 export default function InfoUser(props){
     //haciendo destructuring a props u a userInfo metiendo la variable en {}
-    const {userInfo : {photoURL, displayName, email}} = props;
+    const {userInfo : { uid, photoURL, displayName, email}, toastRef} = props;
     //const { photoURL } = userInfo;
-    console.log(photoURL);
-    console.log(displayName);
-    console.log(email);
+    
+    const changeAvatar = async () => {
+        const resultPermissions = await Permissions.askAsync(
+            Permissions.CAMERA
+        );
+        const resultPermissionCamera =  resultPermissions.permissions.camera.status;
+        //console.log(resultPermissions);
+        if(resultPermissionCamera === "denied"){
+            toastRef.current.show("Es necesario aceptar los permisos de la galeria");
+        }else{
+            const result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4,3],
+            })
+            if(result.cancelled){
+                toastRef.current.show("Has cerrado la seleccion de imagen");
+            }else{
+                uploadImage(result.uri).then(() => {
+                    console.log("Imagen cargada correctamente");
+                }).catch(() => {
+                    toastRef.current.show("Error al actualizar el avatar")
+                });
+            }
+        }
+    };
+
+    const uploadImage = async (uri) => {
+        //console.log(uri);
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        //console.log(JSON.stringify(blob));
+        const ref = firebase.storage().ref().child(`avatar/${uid}`);
+        return ref.put(blob);
+
+    }
 
     return (
         <View style={styles.viewUserInfo}>
@@ -16,6 +53,7 @@ export default function InfoUser(props){
               rounded
               size="large"
               showEditButton
+              onEditPress={changeAvatar}
               containerStyle={styles.userInfoAvatar}
               source={
                   photoURL ? { uri: photoURL}

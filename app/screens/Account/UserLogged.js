@@ -25,7 +25,7 @@ export default function UserLogged() {
     return (
         <View style="styles.viewUserInfo">
             {/* Mostrando el componente solo cuando userInfo tenga datos */}
-            { userInfo && <InfoUser userInfo={userInfo}/>}
+            { userInfo && <InfoUser userInfo={userInfo} toastRef={toastRef}/>}
 
             <Text>AccountOptions</Text>
 
