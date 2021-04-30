@@ -9,7 +9,8 @@ import * as MediaLibrary from 'expo-media-library';
 
 export default function InfoUser(props){
     //haciendo destructuring a props u a userInfo metiendo la variable en {}
-    const {userInfo : { uid, photoURL, displayName, email}, toastRef} = props;
+    const {userInfo : { uid, photoURL, displayName, email}, 
+    toastRef, setLoading, setLoadingText} = props;
     //const { photoURL } = userInfo;
     
     const changeAvatar = async () => {
@@ -17,7 +18,7 @@ export default function InfoUser(props){
             Permissions.CAMERA
         );
         const resultPermissionCamera =  resultPermissions.permissions.camera.status;
-        //console.log(resultPermissions);
+
         if(resultPermissionCamera === "denied"){
             toastRef.current.show("Es necesario aceptar los permisos de la galeria");
         }else{
@@ -29,7 +30,7 @@ export default function InfoUser(props){
                 toastRef.current.show("Has cerrado la seleccion de imagen");
             }else{
                 uploadImage(result.uri).then(() => {
-                    console.log("Imagen cargada correctamente");
+                    updatePhotoUrl();
                 }).catch(() => {
                     toastRef.current.show("Error al actualizar el avatar")
                 });
@@ -38,6 +39,8 @@ export default function InfoUser(props){
     };
 
     const uploadImage = async (uri) => {
+        setLoadingText("Actualizando Avatar...");
+        setLoading(true);
         //console.log(uri);
         const response = await fetch(uri);
         const blob = await response.blob();
@@ -45,6 +48,23 @@ export default function InfoUser(props){
         const ref = firebase.storage().ref().child(`avatar/${uid}`);
         return ref.put(blob);
 
+    }
+
+    const updatePhotoUrl = () => {
+        firebase
+        .storage()
+        .ref(`avatar/${uid}`)
+        .getDownloadURL()
+        .then(async (response) => {
+            const update = {
+                photoURL : response,
+            };
+            await firebase.auth().currentUser.updateProfile(update);
+            setLoading(false);
+        })
+        .catch(() => {
+            toastRef.current.show("Error al actualizar el avatar");
+        })
     }
 
     return (
