@@ -11,6 +11,7 @@ export default function UserLogged() {
     const [userInfo, setUserInfo] = useState(null)
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState("")
+    const [reloadUserInfo, setReloadUserInfo] = useState(false);
     const toastRef = useRef();
 
     useEffect(() => {
@@ -20,7 +21,8 @@ export default function UserLogged() {
             //Actualizando el estado
             setUserInfo(user);
         })()
-    }, [])
+        setReloadUserInfo(false);
+    }, [reloadUserInfo]);
 
 
     return (
@@ -33,7 +35,7 @@ export default function UserLogged() {
                             setLoadingText={setLoadingText}
                             />}
 
-            <AccountOptions userInfo={userInfo} toastRef={toastRef} />
+            <AccountOptions userInfo={userInfo} toastRef={toastRef} setReloadUserInfo={setReloadUserInfo}/>
 
             <Button 
               title="Cerrar sesión" 
