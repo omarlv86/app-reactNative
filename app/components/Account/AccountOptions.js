@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text} from "react-native";
 import { ListItem } from "react-native-elements";
 import { map } from "lodash";
+import Modal from "../Modal";
 
 export default function AccountOptions(props){
     const {userInfo, toastRef} = props;
+    const [showModal, setShowModal] = useState(true)
 
 const selectedComponent = (key) => {
     console.log(key);
@@ -33,6 +35,9 @@ const menuOptions = generateOptions(selectedComponent);
                 onPress={menu.onPress}
                />
            ))}
+           <Modal isVisible={showModal} setIsVisible={setShowModal}>
+               <Text>Hola mundo</Text>
+           </Modal>
         </View>
     )
 }
