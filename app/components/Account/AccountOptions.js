@@ -4,6 +4,7 @@ import { ListItem } from "react-native-elements";
 import { map } from "lodash";
 import Modal from "../Modal";
 import ChangeDisplayNameForm from "./ChangeDisplayNameForm";
+import ChangeEmailForm from "./ChangeEmailForm";
 
 export default function AccountOptions(props){
     const {userInfo, toastRef, setReloadUserInfo} = props;
@@ -24,7 +25,14 @@ const selectedComponent = (key) => {
             setShowModal(true);
             break
         case "email":
-            setRenderComponent(<Text>Cambiando Email</Text>);
+            setRenderComponent(
+              <ChangeEmailForm
+                email={userInfo.email}
+                setShowModal={setShowModal}
+                toastRef={toastRef}
+                setReloadUserInfo={setReloadUserInfo}
+              />
+            );
             setShowModal(true);
             break
         case "password":
