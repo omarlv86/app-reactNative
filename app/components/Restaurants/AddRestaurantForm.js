@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, ScrollView, Alert, Dimensions } from "react-native";
 import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
+import { map, size } from "lodash";
 
 export default function AddRestaurantForm(props){
     //console.log(props);
@@ -8,13 +11,15 @@ export default function AddRestaurantForm(props){
     const [restaurantName, setRestaurantName] = useState("")
     const [restaunrantAddress, setRestaurantAddress] = useState("")
     const [restaurantDescription, setRestaurantDescription] = useState("")
+    const [imageSelected, setImageSelected] = useState([])
 
 
     const addRestaurant = () => {
         console.log("Ok");
-        console.log("restaurantName: " +restaurantName);
-        console.log("restaunrantAddress: " +restaunrantAddress);
-        console.log("restaurantDescription: " +restaurantDescription);
+        //console.log("restaurantName: " +restaurantName);
+        //console.log("restaunrantAddress: " +restaunrantAddress);
+        //console.log("restaurantDescription: " +restaurantDescription);
+        console.log(imageSelected);
     }
 
     return(
@@ -24,7 +29,11 @@ export default function AddRestaurantForm(props){
             setRestaurantAddress={setRestaurantAddress}
             setRestaurantDescription={setRestaurantDescription}
           />
-          <UploadImage />
+          <UploadImage 
+            toastRef={toastRef} 
+            imageSelected={imageSelected} 
+            setImageSelected={setImageSelected}
+          />
           <Button 
             title="Crear Restaurante"
             onPress={addRestaurant}
@@ -62,19 +71,50 @@ function FormAdd(props){
     )
 }
 
-function UploadImage(){
-    const imageSelect = () => {
-        console.log("Imagenes...");
+function UploadImage(props){
+    const { toastRef, imageSelected, setImageSelected } = props;
+    const imageSelect = async () => {
+        const resultPermissions = await Permissions.askAsync(
+            Permissions.CAMERA
+        );
+        
+        //console.log(resultPermissions);
+        if(resultPermissions === "denied"){
+            toastRef.current.show("Es necesario aceptar los permisos de la galeria", 3000);
+        }else {
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [4,3]
+            })
+            //console.log(result);
+            if(result.cancelled){
+                toastRef.current.show("Ha cerrado la galeria sin seleccionar ninguna imagen", 2000);
+            }else{
+               // console.log(result.uri);
+               //setImageSelected(result.uri);
+               setImageSelected([...imageSelected, result.uri])
+            }
+        }
     }
     return (
         <View style={styles.viewImage}>
-          <Icon 
-            type="material-community"
-            name="camera"
-            color="#7a7a7a"
-            containerStyle={styles.containerIcon}
-            onPress={imageSelect}
-          />
+            {size(imageSelected) < 5 && (
+              <Icon 
+                type="material-community"
+                name="camera"
+                color="#7a7a7a"
+                containerStyle={styles.containerIcon}
+                onPress={imageSelect}
+              />
+            )}
+          
+          {map(imageSelected, (imageRestaurant, index) => (
+               <Avatar 
+                 key={index}
+                 style={styles.miniatureStyle}
+                 source={{ uri: imageRestaurant }}
+               />
+          ))}
         </View>
     )
 }
@@ -113,7 +153,11 @@ const styles = StyleSheet.create({
         marginRight: 10,
         height:70,
         width: 70,
-        backgroundColor: "#e3e3e3"
-    
+        backgroundColor: "#e3e3e3",
+    },
+    miniatureStyle: {
+        width: "19%",
+        height:70,
+        marginRight: 5
     }
 })

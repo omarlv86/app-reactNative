@@ -10,7 +10,7 @@ export default function Restautants(props){
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userInfo) => {
-          console.log(userInfo);
+          //console.log(userInfo);
           setUser(userInfo);
         })
     }, [])
