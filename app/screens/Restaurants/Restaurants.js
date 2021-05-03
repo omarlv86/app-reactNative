@@ -4,7 +4,8 @@ import { Icon } from "react-native-elements";
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
 
-export default function Restautants(){
+export default function Restautants(props){
+    const { navigation } = props;
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -25,6 +26,7 @@ export default function Restautants(){
                 name="plus" 
                 color="#00a680"
                 containerStyle={styles.btnContainer}
+                onPress={() => navigation.navigate("add-restaurant")}
               />
             )}
             
