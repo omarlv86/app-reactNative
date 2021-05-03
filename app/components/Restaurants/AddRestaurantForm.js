@@ -1,30 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, ScrollView, Alert, Dimensions } from "react-native";
 import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
 
-export default function AddRestaurantForm(){
+export default function AddRestaurantForm(props){
+    //console.log(props);
+    const { toastRef, setIsLoading, navigation } = props;
+    const [restaurantName, setRestaurantName] = useState("")
+    const [restaunrantAddress, setRestaurantAddress] = useState("")
+    const [restaurantDescription, setRestaurantDescription] = useState("")
+
+
+    const addRestaurant = () => {
+        console.log("Ok");
+        console.log("restaurantName: " +restaurantName);
+        console.log("restaunrantAddress: " +restaunrantAddress);
+        console.log("restaurantDescription: " +restaurantDescription);
+    }
+
     return(
         <ScrollView style={styles.ScrollView}>
-          <FormAdd />
+          <FormAdd 
+            setRestaurantName={setRestaurantName}
+            setRestaurantAddress={setRestaurantAddress}
+            setRestaurantDescription={setRestaurantDescription}
+          />
+          <Button 
+            title="Crear Restaurante"
+            onPress={addRestaurant}
+            buttonStyle={styles.btnAddRestaurant}
+          />
         </ScrollView>
     )
 }
 
 function FormAdd(props){
+    const { 
+        setRestaurantName, 
+        setRestaurantAddress, 
+        setRestaurantDescription
+    } = props;
     return(
         <View style={styles.viewForm}>
             <Input 
               placeholder="Nombre del restaurante"
               containerStyle={ styles.input }
+              onChange={(e) => setRestaurantName(e.nativeEvent.text)}
             />
             <Input 
               placeholder="Direccion"
               containerStyle={ styles.input }
+              onChange={(e) => setRestaurantAddress(e.nativeEvent.text)}
             />
             <Input 
               placeholder="Descripcion del restaurante"
               multiline={true}
               inputContainerStyle={ styles.textArea}
+              onChange={(e) => setRestaurantDescription(e.nativeEvent.text)}
             />
         </View>
     )
@@ -47,5 +78,9 @@ const styles = StyleSheet.create({
         width: "100%",
         padding: 0,
         margin: 0,
+    },
+    btnAddRestaurant: {
+        backgroundColor: "#00a680",
+        margin: 20
     }
 })
