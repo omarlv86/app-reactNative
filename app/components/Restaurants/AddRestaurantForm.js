@@ -16,7 +16,7 @@ export default function AddRestaurantForm(props){
     //console.log(props);
     const { toastRef, setIsLoading, navigation } = props;
     const [restaurantName, setRestaurantName] = useState("")
-    const [restaunrantAddress, setRestaurantAddress] = useState("")
+    const [restaurantAddress, setRestaurantAddress] = useState("")
     const [restaurantDescription, setRestaurantDescription] = useState("");
     const [imageSelected, setImageSelected] = useState([]);
     const [isVisibleMap, setIsVisibleMap] = useState(false);
@@ -24,12 +24,15 @@ export default function AddRestaurantForm(props){
 
 
     const addRestaurant = () => {
-        console.log("Ok");
-        //console.log("restaurantName: " +restaurantName);
-        //console.log("restaunrantAddress: " +restaunrantAddress);
-        //console.log("restaurantDescription: " +restaurantDescription);
-        console.log(imageSelected);
-        console.log(locationRestaurant);
+        if(!restaurantName || !restaurantAddress || !restaurantDescription){
+            toastRef.current.show("Todos los campos del formulario son obligatorios");
+        }else if(size(imageSelected) === 0){
+            toastRef.current.show("El restaurante debe de tener al menos una foto");
+        }else if(!locationRestaurant){
+            toastRef.current.show("Tienes que guardar la localizacion del restaurante en el mapa");
+        }else{
+            console.log("Ok");
+        }
     }
 
     return(
