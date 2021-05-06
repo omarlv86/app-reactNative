@@ -7,6 +7,12 @@ import { map, size, filter } from "lodash";
 import Modal from "../Modal";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
+import { firebaseApp } from "../../Utils/firebase";
+import firebase from "firebase/app";
+import "firebase/storage";
+import uuid from "random-uuid-v4";
+import "firebase/firestore";
+const db = firebase.firestore(firebaseApp);
 
 
 const widthScreen = Dimensions.get("window").width;
@@ -31,8 +37,58 @@ export default function AddRestaurantForm(props){
         }else if(!locationRestaurant){
             toastRef.current.show("Tienes que guardar la localizacion del restaurante en el mapa");
         }else{
-            console.log("Ok");
+            setIsLoading(true);
+            uploadImageStorage().then(response => {
+                //console.log(response);
+                db.collection("restaurants")
+                  .add({
+                      name: restaurantName,
+                      address: restaurantAddress,
+                      description: restaurantDescription,
+                      location: locationRestaurant,
+                      images: response,
+                      rating: 0,
+                      ratingTotal: 0,
+                      quantityVoting: 0,
+                      createAt: new Date(),
+                      createBy: firebaseApp.auth().currentUser.uid,
+                  })
+                  .then(() => {
+                    setIsLoading(false);
+                    //console.log("Ok")
+                    navigation.navigate("restaurants");
+                  }).catch(() => {
+                    setIsLoading(false);
+                    toastRef.current.show(
+                        "Error al subir el restaurante, intentelo mas tarde"
+                    )
+                  })
+            })
         }
+    }
+
+    const uploadImageStorage = async () => {
+      //console.log(imageSelected);
+      const imageBlob = [];
+
+      await Promise.all(
+        map(imageSelected, async (image) => {
+            const response = await fetch(image);
+            const blob = await response.blob();
+            const ref = firebase.storage().ref("restaurants").child(uuid());
+            await ref.put(blob).then(async (result) => {
+                await firebase
+                      .storage()
+                      .ref(`restaurants/${result.metadata.name}`)
+                      .getDownloadURL()
+                      .then(photoUrl =>{
+                        imageBlob.push(photoUrl);
+                      })
+            })
+        })
+      );
+
+      return imageBlob;
     }
 
     return(

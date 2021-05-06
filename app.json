@@ -20,6 +20,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.omarvargas86.cincotenedores",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCwhvCudEzPDNh8OVR8zxFAXAPKDvykANM"
+        }
+      },
       "permissions": [ 
         "CAMERA", 
         "WRITE_EXTERNAL_STORAGE", 
