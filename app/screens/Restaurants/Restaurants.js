@@ -4,6 +4,7 @@ import { Icon } from "react-native-elements";
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import ListRestaurant from "../../components/Restaurants/ListRestaurants";
 
 
 const db = firebase.firestore(firebaseApp);
@@ -15,8 +16,6 @@ export default function Restautants(props){
     const [totalRestaurants, setTotalRestaurants] = useState(0);
     const [startRestaurant, setStartRestaurant] = useState(null);
     const limitRestaurant = 5;
-    //console.log(totalRestaurants);
-    console.log(restaurants);
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userInfo) => {
@@ -52,7 +51,7 @@ export default function Restautants(props){
 
     return(
         <View style={styles.viewBody}>
-            <Text>Restaurants...</Text>
+            <ListRestaurant restaurants={restaurants}/>
 
             { user && (
                 <Icon
