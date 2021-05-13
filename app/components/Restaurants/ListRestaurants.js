@@ -4,7 +4,7 @@ import { Image } from "react-native-elements";
 import {size} from "lodash";
 
 export default function ListRestaurants(props) {
-    const {restaurants} = props;
+    const {restaurants, handleLoadMore, isLoading } = props;
 
     
     return (
@@ -12,13 +12,18 @@ export default function ListRestaurants(props) {
             {size(restaurants) > 0 ? (
                 <FlatList 
                   data={restaurants}
-                  renderItem={(restaurant) => <Restaurant restaurant={restaurant}
+                  renderItem={(restaurant) => (
+                    <Restaurant restaurant={restaurant} />
+                  )}
                   keyExtractor={(item, index) => index.toString()}
-                  />}
+                  onEndReachedThreshold={0.5}
+                  onEndReached={handleLoadMore}
+                  ListFooterComponent={
+                    <FooterList isLoading={isLoading}/>}
                 />
             ) : (
                 <View style={styles.loaderRestaurants}>
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color="#fff" />
                     <Text>Cargando restaurantes</Text>
                 </View>
             )}
@@ -63,6 +68,24 @@ function Restaurant(props){
     )
 }
 
+function FooterList(props) {
+    const { isLoading } = props;
+  
+    if (isLoading) {
+      return (
+        <View style={styles.loaderRestaurants}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.notFoundRestaurants}>
+          <Text>No quedan restaurantes por cargar</Text>
+        </View>
+      );
+    }
+  }
+
 const styles = StyleSheet.create({
     loaderRestaurants: {
         marginTop: 10,
@@ -91,5 +114,10 @@ const styles = StyleSheet.create({
         paddingTop: 2,
         color: "grey",
         width:200,
+    },
+    notFoundRestaurants: {
+        marginTop:10,
+        marginBottom: 20,
+        alignItems: "center",
     }
 })
